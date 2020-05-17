@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IFS=$'\n'
-for branch in $(git branch | sed -e 's/ //g')
+for branch in $(git branch -vv | grep "\[" | awk '{print $1}')
 do
   is_current=0
   if [[ $branch = \** ]] ; then
