@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git prune
+
 current_branch=$(git branch -vv | grep "\[" | grep -v " gone" | grep "\*" | awk '{print $2}')
 if [ -n "$current_branch" ] ; then
   behind_commit=$(git rev-list --right-only --count "$current_branch"...origin/"$current_branch") 
