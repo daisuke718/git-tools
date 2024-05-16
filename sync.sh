@@ -2,24 +2,23 @@
 
 git prune
 
-current_branch=$(git branch -vv | grep "\[" | grep -v " gone" | grep "\*" | awk '{print $2}')
-if [ -n "$current_branch" ] ; then
-  behind_commit=$(git rev-list --right-only --count "$current_branch"...origin/"$current_branch") 
-  if [ "$behind_commit" -gt 0 ] ; then
-    git pull
+current_branch=$(git symbolic-ref -q --short HEAD)
+git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads | while read branch upstream
+do
+  if [ -n "$upstream" ]; then
+    behind_commit=$(git rev-list --right-only --count "$current_branch"...origin/"$current_branch") 
+    if [ "$behind_commit" -gt 0 ]; then
+      if [ "$branch" = "$current_branch" ]; then
+        git pull
+      else
+        git fetch "$branch":"$upstream"
+      fi
+    fi
+  else
+    if [ "$branch" != "$current_branch" ]; then
+      git branch -D $branch
+    fi
   fi
 fi
 
-for branch in $(git branch -vv | grep "\[" | grep -v "\*" | awk '{print $1}')
-do
-  gone_remote=$(git branch -vv | grep " $branch .* gone")
-  if [ -n "$gone_remote" ] ; then
-    git branch -D $branch
-  else 
-    behind_commit=$(git rev-list --right-only --count "$branch"...origin/"$branch")
-    if [ "$behind_commit" -gt 0 ] ; then
-      git fetch origin "$branch":"$branch"
-    fi
-  fi
-done
-
+echo "done"
