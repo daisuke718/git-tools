@@ -18,6 +18,6 @@ do
       fi
     fi
   fi
-fi
+done
 
 echo "done"
