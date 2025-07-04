@@ -3,7 +3,7 @@
 git prune
 
 current_branch=$(git symbolic-ref -q --short HEAD)
-git for-each-ref --format='%(refname:short) %(upstream:short) $(upstream:track)' refs/heads | while read branch upstream
+git for-each-ref --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads | while read branch upstream track
 do
   if [ -n "$upstream" ]; then
     if [ "$track" = "[gone]" ]; then
