@@ -7,7 +7,9 @@ git for-each-ref --format='%(refname:short) %(upstream:short) %(upstream:track)'
 do
   if [ -n "$upstream" ]; then
     if [ "$track" = "[gone]" ]; then
-      git branch -D $branch
+      if [ "$branch" != "$current_branch" ]; then
+        git branch -D $branch
+      fi
     else
       if [[ "$track" =~ "behind" ]]; then
         if [ "$branch" = "$current_branch" ]; then
